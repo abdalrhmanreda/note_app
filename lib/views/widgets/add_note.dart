@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:note_app/views/widgets/custom_button.dart';
 import 'package:note_app/views/widgets/custom_text_feild.dart';
 
-class CustomAddNote extends StatelessWidget {
+class CustomAddNote extends StatefulWidget {
   const CustomAddNote({super.key});
+
+  @override
+  State<CustomAddNote> createState() => _CustomAddNoteState();
+}
+
+class _CustomAddNoteState extends State<CustomAddNote> {
+  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+  String? title, supTitle;
+  var formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     var noteController = TextEditingController();
@@ -16,6 +25,14 @@ class CustomAddNote extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CustomTextFormField(
+                onSaved: (value) {
+                  title = value;
+                },
+                validate: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Feild is required';
+                  }
+                },
                 controller: noteController,
                 label: 'Add Note',
                 isPassword: false,
@@ -27,6 +44,14 @@ class CustomAddNote extends StatelessWidget {
                 height: 16,
               ),
               CustomTextFormField(
+                onSaved: (value) {
+                  supTitle = value;
+                },
+                validate: (value) {
+                  if (value?.isEmpty ?? true) {
+                    return 'Feild is required';
+                  }
+                },
                 isPassword: false,
                 maxLine: null,
                 label: 'description',
@@ -43,7 +68,13 @@ class CustomAddNote extends StatelessWidget {
                 height: 16,
               ),
               CustomButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                  } else {
+                    autovalidateMode = AutovalidateMode.always;
+                  }
+                },
                 text: 'Add note',
                 horizontal: 0,
                 vertical: 0,
